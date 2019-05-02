@@ -9,6 +9,7 @@
   "dependencies": {
     "eslint-plugin-jest": "^22.5.1",
     "markdown": "^0.5.0",
+    "markdown-link-extractor": "^1.2.0",
     "marked": "^0.6.2",
     "node-fetch": "^2.3.0",
     "npm": "^6.9.0"
