@@ -1,5 +1,5 @@
 {
-  "name": "md-links",
+  "name": "markdown-finder",
   "version": "1.0.0",
   "description": "\"Design a library using Node.js who can indetify .md files and get some stadistics\"",
   "main": "index.js",
@@ -25,15 +25,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KarlyVall/GDL002-md-links.git"
-  },
-  "author": "Karla Elizabeth Valenzuela Ríos",
-  "license": "ISC",
-  "bin": {
-    "md-links": "index.js"
-  },
-  "bugs": {
-    "url": "https://github.com/KarlyVall/GDL002-md-links/issues"
-  },
-  "homepage": "https://github.com/ElizabethVegaM/scl-2018-01-FE-markdown#readme"
+    "url": "git+https://github.com/KarlyVall/markdown-finder"
+  }
 }
