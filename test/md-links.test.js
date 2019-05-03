@@ -1,17 +1,19 @@
-const { validatePath, absolutePath, readFileMd } = require('../src/Linksmd.js');
-const { tryThis } = require('../src/Linksmd.js')
+const mdLinks = require('../index.js');
 
-test('should be a markdown file', () => {
-  expect(validatePath('README.md')).toBe(true);
-  expect(validatePath("README.txt")).toBe(false);
+/* Test for know if there is a mdFile*/
+describe('Linksmd', () => {
+  test('Should be a function', () => {
+    expect(typeof (Linksmd.mdFile)).toBe('function');
+  });
+  test('should return a file with extension .md when user type', () => {
+    expect(Linksmd.mdFile('readme.md')).toEqual(true);
+  });
 });
 
-test('should be an absolute path ', () => {
-  expect(absolutePath('README.md')).toBe("C:\Users\Karla Val\Documents\GitHubKarla\GDL002-md-links\README.md");
-});
-
-test ("should read a file",()=>{
-  readFileMd("onetesting.md").then((result) => {
-     expect(result).toBe("que onditas");
-  })
+describe('markdown-link-extractor', () => {
+  test('Should return an empty array while no links are in file', () => {
+      let links = markdownLinkExtractor('No links found here');
+      expect(links).to.be.an('array');
+      expect(links).to.have.length(0);
+  });
 });
