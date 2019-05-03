@@ -1,87 +1,81 @@
 const fs = require('fs');
-const path = require('path');
+const filePath = process.argv[2];
 const fetch = require('node-fetch');
+const mdLinks = require('./index');
+const fileReaded = mdLinks(filePath, null);
+const colors = require('colors');
 
-function validatePath(pathMd) {
-  const extension = path.extname(pathMd);
-  if (extension == '.md') {
-    console.log('true');
+const inputPath = input => {
+  if (input != undefined) {
+    console.log(colors.yellow('Your input is an address'));
     return true;
   } else {
-    console.log('false');
+    console.log('Your input is not an address'.red);
     return false;
   }
-}
+};
+inputPath(filePath);
 
-function absolutePath(absolutelink) {
-  const absolute = path.resolve(absolutelink);
-  return absolute;
-}
+const mdFile = pathFile => {
+  const pathExt = path.extname(pathFile);
+  if (pathExt != '.md') {
+    console.log('it doesn´t a file markdown'.red);
+    return false;
+  } else {
+    console.log('it´s a markdown file'.magenta);
+    return true;
+  }
+};
+mdFile(filePath);
 
-function readFileMd(pathMd) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(pathMd, 'utf-8', (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
+//this must be appear after the file was read
+fileReaded.then(
+  data => {
+    console.log('Links found:'.yellow);
+    urlList(data);
+  },
+  err => {
+    console.error(err);
+  },
+);
+
+//Function for find the url, the text and the origin path
+let htmlLinks = [];
+const urlList = data => {
+  const mdLinkOne = /\[(.+?)\]\(.+?\)/g;
+  const mdLinkTwo = /\[(.+?)\]\((.+?)\)/;
+  let allLinks = data.match(mdLinkOne);
+  for (let x in allLinks) {
+    var groupDataTotal = mdLinkTwo.exec(allLinks[x]);
+    var groupData = {
+      href: groupDataTotal[2],
+      title: groupDataTotal[1],
+      path: filePath,
+    };
+    htmlLinks.push(groupData);
+  }
+  console.log(htmlLinks.length);
+  console.log(htmlLinks);
+  return htmlLinks;
+};
+
+const validateLinks = allLinks => {
+  for (let index = 0; index < allLinks.length; index++) {
+    fetch(allLinks[i]).then(response => {
+      if (response.status == 200) {
+        console.log('ok');
+      } else if (response.status == 400 || response.status == 404) {
+        console.log('fail');
       }
-      console.log(data);
     });
-  });
+  }
 };
-
-function findLinks (pathMd) {
-  fs.readFile(pathMd, 'utf-8',function (err, data){
-    if (err) {
-      console.log(err);
-    } else {          
-      let find = data.toString();
-      let href = /(((https?:\/\/)|(http?:\/\/)|(www\.))[^\s\n)]+)(?=\))/g;
-      let text = /(?:[^[])([^[]*)(?=(\]+\(((https?:\/\/)|(http?:\/\/)|(www\.))))/g;
-      let linksFinder = find.match(href);
-      let textFinder = find.match(text);
-      if (linksFinder !=null ){
-        for ( let i=0; i<linksFinder.length; i++ ){
-          console.log(`Text: ${textFinder[i]}\n href:${linksFinder[i]}\n File: ${pathMd}\n`);
-        }
-      } 
-      }
-  });
-};
-
-
-function ValidateLinks (pathMd) {
-  fs.readFile(pathMd, 'utf-8',function (err, data){
-    if (err) {
-      console.log(err);
-    } else {          
-      let find = data.toString();
-      let href = /(((https?:\/\/)|(http?:\/\/)|(www\.))[^\s\n)]+)(?=\))/g;
-      let text = /(?:[^[])([^[]*)(?=(\]+\(((https?:\/\/)|(http?:\/\/)|(www\.))))/g;
-      let linksFinder = find.match(href);
-      let textFinder = find.match(text);
-      if (linksFinder !=null ){
-        for ( let i=0; i<linksFinder.length; i++ ){
-          fetch(linksFinder[i])
-            .then(response =>{
-              if(response.status == 200){
-                console.log(`Text: ${textFinder[i]}\n href:${linksFinder[i]}\n File: ${pathMd}\n Response code: ${response.status}\nResponse: ${response.statusText}\n`)
-              }else if (response.status == 404||response.status == 400){
-                console.log(`ERROR.\nText:${textFinder[i]}\n href:${linksFinder[i]}\n File: ${pathMd}\n Response code: ${response.status}\nResponse: ${response.statusText}\n` );
-                
-              }
-            })
-        }
-      } 
-      }
-  });
-};
+console.log(validateLinks(htmlLinks));
 
 module.exports = {
-  validatePath,
-  absolutePath,
-  readFileMd,
-  findLinks,
-  ValidateLinks
+  realPath,
+  inputPath,
+  mdFile,
+  readFile,
+  urlList,
 };
