@@ -1,3 +1,3 @@
-const Onetest = require("./Linksmd");
-Onetest.readFileMd("README.md");
+const Onetest = require("./Links");
+Onetest.ValidateLinks("onetesting2.md");
 
